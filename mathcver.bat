@@ -46,7 +46,7 @@ echo pack - packs mcdx sheet
 exit
 
 :mathcver.unpack
-7z x %2 -oc %2 >nul 2>nul
+7z x %2 -oC%2 -y -n
 IF ERRORLEVEL 0 goto mathcver.unpack.success
 echo An error occured!
 exit 1
