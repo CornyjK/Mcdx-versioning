@@ -46,17 +46,22 @@ echo pack - packs mcdx sheet
 exit
 
 :mathcver.unpack
-7z x %2 
+7z x %2 -oc %2 >nul 2>nul
+IF ERRORLEVEL 0 goto mathcver.unpack.success
+echo An error occured!
+exit 1
 
-
-
+:mathcver.unpack.success
+echo Unpack successful!
+rem place verifying code here!
+exit
 
 :error.install.7-zip
 echo Can't install 7-zip!
 echo Try restarting your machine or installing 7-zip manually.
-exit
+exit 1
 
 :error.verify.7-zip
 echo Can't detect 7-zip after successful installation!
 echo Try restarting your machine, installing 7-zip or adding 7-zip to path manually.
-exit
+exit 1
