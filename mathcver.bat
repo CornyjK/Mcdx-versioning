@@ -1,4 +1,5 @@
 @echo off
+chcp 65001 >nul 2>nul
 setlocal enableextensions enabledelayedexpansion
 set mathcver.version=0.1.0
 
@@ -22,12 +23,33 @@ set 7-zip.installed 1
 
 :mathcver.begin
 if "%1"=="help" goto mathcver.help
+if "%1"=="about" goto mathcver.about
+if "%1"=="pack" goto mathcver.pack
+if "%1"=="unpack" goto mathcver.unpack
 pause
+
+:mathcver.about
+echo Mathcad versioning tool %mathcver.version%
+echo created by Kryštof Černý @CornyjK
+exit
 
 :mathcver.help
 echo Mathcad versioning tool %mathcver.version%
-echo usage: mathcver <command>
+echo.
+echo usage: mathcver ^<command^> ^<arguments^>
+echo.
+echo Available commands:
+echo about - about this script
+echo help - displays this help
+echo unpack - unpacks mcdx sheet
+echo pack - packs mcdx sheet
 exit
+
+:mathcver.unpack
+7z x %2 
+
+
+
 
 :error.install.7-zip
 echo Can't install 7-zip!
@@ -38,5 +60,3 @@ exit
 echo Can't detect 7-zip after successful installation!
 echo Try restarting your machine, installing 7-zip or adding 7-zip to path manually.
 exit
-
-pause
