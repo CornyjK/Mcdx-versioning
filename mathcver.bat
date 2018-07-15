@@ -52,6 +52,7 @@ echo pack - packs mcdx sheet
 exit
 
 :mathcver.unpack
+rem unpack also sub-packages of sheet pages
 If Not Exist "%cd%\%2" goto error.mathcver.unpack.nonexistant
 
 ren "%2" "%2" >nul 2>nul
