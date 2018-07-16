@@ -61,13 +61,12 @@ IF ERRORLEVEL 1 goto error-mcdxver-unpack-used
 
 SET mcdxver-unpack-target-tmp=%mcdxver-unpack-source:~0,-5%
 SET mcdxver-unpack-target=%mcdxver-unpack-target-tmp%.mcdxver
-echo %mcdxver-unpack-target%
 
 7z x %mcdxver-unpack-source% -o%mcdxver-unpack-target% -y -aoa
 
 IF ERRORLEVEL 0 (
     echo Mcdx unpacked, now doing the files!
-    set mcdxver-unpack-pages-loop=1
+    set mcdxver-unpack-pages-loop-active=1
     set mcdxver-unpack-pages-page=0
     goto mcdxver-unpack-pages-loop
 )
@@ -75,8 +74,9 @@ echo An error occured!
 exit 1
 
 :mcdxver-unpack-pages-loop
-if "%mcdxver-unpack-pages-loop.active"=="1" (
-    7z x %2\ -o%2 -y -aoa
+if "%mcdxver-unpack-pages-loop-active"=="1" (
+    If Exist "%cd%\%mcdxver-unpack-target%\mathcad\xaml\FlowDocument%mcdxver-unpack-pages-page%.XamlPackage" goto error-mcdxver-unpack-nonexistant
+    7z x %cd%\%mcdxver-unpack-target%\mathcad\xaml\FlowDocument%mcdxver-unpack-pages-page%.XamlPackage -o%cd%\%mcdxver-unpack-target%\mathcad\xaml\FlowDocument%mcdxver-unpack-pages-page% -y -aoa
     goto mcdxver-unpack-pages-loop
 )
 rem place verifying code here!
