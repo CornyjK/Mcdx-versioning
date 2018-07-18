@@ -40,6 +40,7 @@ echo "donate by ""mcdxver donate"""
 exit
 
 :mcdxver_donate
+echo Thank you!
 start "" http://paypal.me/CornyjK
 exit
 
@@ -54,36 +55,56 @@ echo Available commands:
 echo about - about this script
 echo help - displays this help or help about command
 echo unpack - unpacks mcdx sheet
-echo pack - packs mcdx sheet - warning - may break your sheet
+echo pack - packs mcdx sheet - warning - may break your sheet (experimental)
 exit
 
 :mcdxver_unpack
-set mcdxver_unpack_source=%2
-
-if not exist "%cd%\%mcdxver_unpack_source%" goto error_mcdxver_unpack_nonexistant
-
-ren "%mcdxver_unpack_source%" "%mcdxver_unpack_source%" >nul 2>nul
+set mcdxver_unpack_file=%2
+if not exist "%cd%\%mcdxver_unpack_file%" goto error_mcdxver_unpack_nonexistant
+ren "%mcdxver_unpack_file%" "%mcdxver_unpack_file%" >nul 2>nul
 if ERRORLEVEL 1 goto error_mcdxver_unpack_used
-
-set mcdxver_unpack_target-tmp=%mcdxver_unpack_source:~0,-5%
-set mcdxver_unpack_target=%mcdxver_unpack_target-tmp%.mcdxver
-
-7z x %mcdxver_unpack_source% -o%mcdxver_unpack_target% -y -aoa >nul 2>nul
-
+set mcdxver_unpack_folder_tmp=%mcdxver_unpack_file:~0,-5%
+set mcdxver_unpack_folder=%mcdxver_unpack_folder_tmp%.mcdxver
+7z x %mcdxver_unpack_file% -o%mcdxver_unpack_folder% -y -aoa >nul 2>nul
 if not ERRORLEVEL 0 goto error_undefined
 echo Mcdx unpacked, now unpacking pages!
 set mcdxver_unpack_pages_page=0
-goto mcdxver_unpack_pages_loop
+goto mcdxver_unpack_pages
 
-:mcdxver_unpack_pages_loop
-if exist "%cd%\%mcdxver_unpack_target%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage" (
-    7z x %cd%\%mcdxver_unpack_target%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage -o%cd%\%mcdxver_unpack_target%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page% -y -aoa  >nul 2>nul
+:mcdxver_unpack_pages
+if exist "%cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage" (
+    7z x %cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage -o%cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page% -y -aoa  >nul 2>nul
     set /a "mcdxver_unpack_pages_page+=1"
-    goto mcdxver_unpack_pages_loop
+    goto mcdxver_unpack_pages
 )
 set /a mcdxver_unpack_pages_pages=mcdxver_unpack_pages_page + 1
 echo Done, %mcdxver_unpack_pages_pages% pages total.
 rem place verifying code here!
+exit
+
+:mcdxver_pack
+set mcdxver_pack_file=%2
+set mcdxver_pack_folder_tmp=%mcdxver_pack_file:~0,-5%
+set mcdxver_pack_folder=%mcdxver_pack_folder_tmp%.mcdxver
+set mcdxver_unpack_pages_page=0
+goto mcdxver_pack_pages
+
+:mcdxver_pack_pages
+if exist "%cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%" (
+    rem 7z x %cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage -o%cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page% -y -aoa  >nul 2>nul
+    del /F /Q %cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%.XamlPackage
+    7z a %mcdxver_pack_file% .\subdir\*
+    set /a "mcdxver_pack_pages_page+=1"
+    goto mcdxver_pack
+)
+goto
+
+:mcdxver_pack_mcdx
+rem copy to temp
+rem delete XamlPackage folders
+rem pack to mcdx
+rem copy back to %cd%
+rem add some errors...
 exit
 
 :error_7-zip_install
