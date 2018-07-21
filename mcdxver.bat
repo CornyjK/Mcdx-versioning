@@ -86,25 +86,36 @@ exit
 set mcdxver_pack_file=%2
 set mcdxver_pack_folder_tmp=%mcdxver_pack_file:~0,-5%
 set mcdxver_pack_folder=%mcdxver_pack_folder_tmp%.mcdxver
-set mcdxver_unpack_pages_page=0
+set mcdxver_pack_pages_page=0
 goto mcdxver_pack_pages
 
 :mcdxver_pack_pages
 if exist "%cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%" (
-    rem 7z x %cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page%.XamlPackage -o%cd%\%mcdxver_unpack_folder%\mathcad\xaml\FlowDocument%mcdxver_unpack_pages_page% -y -aoa  >nul 2>nul
     del /F /Q %cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%.XamlPackage
-    7z a %mcdxver_pack_file% .\subdir\*
+    7z a %cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%.XamlPackage .\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_pages_page%\*
     set /a "mcdxver_pack_pages_page+=1"
-    goto mcdxver_pack
+    goto mcdxver_pack_pages
 )
-goto
+rmdir /s /q %temp%\%mcdxver_pack_folder%\
+xcopy "%cd%\%mcdxver_pack_folder%" "%temp%\%mcdxver_pack_folder%" /e /v /i 
+echo %cd%\%mcdxver_pack_folder%\ %temp%\%mcdxver_pack_folder%\
+set mcdxver_pack_mcdx_page=0
+goto mcdxver_pack_mcdx
 
 :mcdxver_pack_mcdx
-rem copy to temp
-rem delete XamlPackage folders
-rem pack to mcdx
-rem copy back to %cd%
-rem add some errors...
+if exist "%cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_mcdx_page%" (
+    echo %temp%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_mcdx_page%
+    rmdir /s /q %temp%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_mcdx_page%\
+    set /a "mcdxver_pack_mcdx_page+=1"
+    goto mcdxver_pack_mcdx
+)
+7z a %mcdxver_pack_file% %temp%\%mcdxver_pack_folder%\*
+rem copy to temp - check
+rem delete XamlPackage folders - check
+rem pack to mcdx - check
+rem copy back to %cd% - not needed
+rem add some errors... - later...
+rem test it!
 exit
 
 :error_7-zip_install
