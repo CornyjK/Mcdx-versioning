@@ -110,12 +110,8 @@ if exist "%cd%\%mcdxver_pack_folder%\mathcad\xaml\FlowDocument%mcdxver_pack_mcdx
     goto mcdxver_pack_mcdx
 )
 7z a %mcdxver_pack_file% %temp%\%mcdxver_pack_folder%\*
-rem copy to temp - check
-rem delete XamlPackage folders - check
-rem pack to mcdx - check
-rem copy back to %cd% - not needed
-rem add some errors... - later...
-rem test it!
+rem add some error messages - later
+rem test it! - failed
 exit
 
 :error_7-zip_install
